@@ -1,0 +1,12 @@
+.git
+.venv
+venv
+.cache
+chroma_db
+**/__pycache__
+**/*.py[cod]
+.env
+.env.*
+*.log
+.idea
+.vscode

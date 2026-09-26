@@ -1,0 +1,8 @@
+services:
+  agent:
+    build: .
+    container_name: ai-agent-study
+    environment:
+      OLLAMA_HOST: http://host.docker.internal:11434
+    ports:
+      - "8000:8000"
