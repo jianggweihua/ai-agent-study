@@ -1,17 +1,37 @@
-"""检查当前学习项目的本地模拟知识检索，不调用模型或外部 API。"""
+"""使用真实 SentenceTransformer 和 ChromaDB 检查检索，不调用 Qwen。"""
 
-from app.rag import rag_search
-from app.tools import text_length
+from app.embedding import get_embedding
+from app.rag import NO_RESULT, _ensure_index
+from app.tools import run_tool, text_length
 
 
 if __name__ == "__main__":
-    expected = "公司培训规定：公司每年提供一次免费的职业技能培训。"
-    cases = ["公司有什么培训规定？", "培训每年有几次？"]
-    for question in cases:
-        context = rag_search(question)
-        print(f"问题：{question}\n找到的资料：{context}\n")
-        if context != expected:
-            raise AssertionError(f"预期找到：{expected}")
-    if text_length(expected) != 25:
-        raise AssertionError("培训资料字符统计应为 25")
-    print("当前模拟知识检索和字符统计检查通过；没有调用模型或外部 API。")
+
+    vector = get_embedding("员工培训政策")
+    assert isinstance(vector, list) and len(vector) == 384
+    assert all(isinstance(value, float) for value in vector)
+
+    cases = [
+        ("员工培训政策", "公司培训制度："),
+        ("请假制度查询", "公司请假制度："),
+        ("公司是否提供火星旅行补贴？", NO_RESULT),
+        ("不存在的问题", NO_RESULT),
+        ("休假制度", "公司请假制度："),
+    ]
+
+    for question, expected in cases:
+        context = run_tool("rag_search", question)
+        print(f"\n问题：{question}")
+        print(f"找到的资料：\n{context}")
+        assert expected in context, (question, expected, context)
+        if expected != NO_RESULT:
+            assert NO_RESULT not in context
+
+    collection = _ensure_index()
+    records = collection.get(include=["documents", "embeddings"])
+    assert collection.count() == 3, "当前三段制度应只索引一次"
+    assert all(len(vector) == 384 for vector in records["embeddings"])
+    assert text_length("培训ABC") == 5
+    assert run_tool("text_length", "培训ABC") == "5"
+
+    print("\n真实向量检索、未知问题、持久化索引和字符统计测试通过")

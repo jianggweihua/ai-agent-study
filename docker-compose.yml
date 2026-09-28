@@ -6,3 +6,9 @@ services:
       OLLAMA_HOST: http://host.docker.internal:11434
     ports:
       - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - chroma_db:/app/chroma_db
+
+volumes:
+  chroma_db:

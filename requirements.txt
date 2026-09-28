@@ -1,6 +1,7 @@
-# Direct dependencies for the FastAPI service, matching the local Python 3.12 environment.
+# Direct dependencies for the FastAPI service and its ChromaDB-backed RAG index.
 fastapi==0.141.1
 uvicorn==0.53.0
 pydantic==2.13.5
 ollama==0.6.2
 mcp==2.2.0
+-r requirements-embedding.txt
