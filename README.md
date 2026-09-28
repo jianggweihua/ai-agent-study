@@ -1,5 +1,12 @@
 # AI Agent 企业知识助手
 
+> 基于 FastAPI + Qwen3 + RAG + MCP + Docker 构建的企业知识库智能问答 Agent
+
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-green)
+![RAG](https://img.shields.io/badge/RAG-ChromaDB-orange)
+![Docker](https://img.shields.io/badge/Docker-blue)
+
 一个面向 AI Agent 入门与工程实践的企业知识问答项目。用户通过 FastAPI 提交问题，Agent 使用本地 Ollama 上的 Qwen3 决定直接回答或调用工具；企业制度问题通过 Embedding 向量化，再由 ChromaDB 检索本地知识库。项目还包含 MCP 工具调用示例和 Docker Compose 配置。
 
 ## 项目介绍
